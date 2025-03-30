@@ -1,4 +1,4 @@
-# ISO 17442
+# ISO 17442 for Rust
 
 [![License][license-image]][license-link]<!--
 -->[![Dependency Status][deps-image]][deps-link]<!--

@@ -46,6 +46,7 @@ jobs:
           cache-on-failure: "true"
       - uses: EmbarkStudios/cargo-deny-action@v1
         with:
+          rust-version: "1.85.1"
           command: check ${{ matrix.check }}
 
   clippy:
