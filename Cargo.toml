@@ -1,0 +1,21 @@
+[workspace]
+resolver = "2"
+members = ["types"]
+
+[workspace.metadata.release]
+shared-version = true
+consolidate-commits = true
+tag-name = "v{{version}}"
+
+[workspace.package]
+authors = ["James Cape <jamescape777@gmail.com>"]
+edition = "2024"
+homepage = "https://github.com/jcape/iso17442"
+license = "Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/jcape/iso17442"
+rust-version = "1.85.0"
+version = "0.1.0"
+
+[profile.release]
+lto = true
