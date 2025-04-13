@@ -1,10 +1,13 @@
 [package]
 name = "iso17442-types"
-version.workspace = true
-authors.workspace = true
 description = "ISO 17442 Types"
+readme = "README.md"
+authors.workspace = true
 edition.workspace = true
 license.workspace = true
-readme.workspace = true
 repository.workspace = true
 rust-version.workspace = true
+version.workspace = true
+
+[dependencies]
+thiserror.workspace = true

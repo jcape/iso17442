@@ -8,10 +8,10 @@
 This crate provides no-std compatible data structures for use handling ISO 17442 Legal Entity IDs.
 
 [license-link]: ../LICENSE
-[license-image]: https://img.shields.io/github/license/jcape/iso17442?style=for-the-badge
-[crate-image]: https://img.shields.io/crates/v/iso17442-types.svg?style=for-the-badge
+[license-image]: https://img.shields.io/github/license/jcape/iso17442?style=flat-square
+[crate-image]: https://img.shields.io/crates/v/iso17442-types.svg?style=flat-square
 [crate-link]: https://crates.io/crates/iso17442-types
-[docs-image]: https://img.shields.io/docsrs/iso17442-types?style=for-the-badge
+[docs-image]: https://img.shields.io/docsrs/iso17442-types?style=flat-square
 [docs-link]: https://docs.rs/crate/iso17442-types
-[deps-image]: https://deps.rs/crate/iso17442-types/0.11.0/status.svg?style=for-the-badge
-[deps-link]: https://deps.rs/crate/iso17442-types/0.11.0
+[deps-image]: https://deps.rs/crate/iso17442-types/0.1.0/status.svg?style=flat-square
+[deps-link]: https://deps.rs/crate/iso17442-types/0.1.0

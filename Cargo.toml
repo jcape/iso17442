@@ -2,6 +2,9 @@
 resolver = "2"
 members = ["types"]
 
+[workspace.dependencies]
+thiserror = { version = "2.0.12", default-features = false }
+
 [workspace.metadata.release]
 shared-version = true
 consolidate-commits = true
