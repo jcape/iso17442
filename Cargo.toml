@@ -3,7 +3,17 @@ resolver = "2"
 members = ["types"]
 
 [workspace.dependencies]
+ref-cast = "1.0"
 thiserror = { version = "2.0.12", default-features = false }
+yare = "3"
+
+[workspace.lints.clippy]
+missing_safety_doc = "forbid"
+
+[workspace.lints.rust]
+unsafe_code = "deny"
+missing_debug_implementations = "forbid"
+missing_docs = "forbid"
 
 [workspace.metadata.release]
 shared-version = true
@@ -17,7 +27,7 @@ homepage = "https://github.com/jcape/iso17442"
 license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/jcape/iso17442"
-rust-version = "1.85.1"
+rust-version = "1.87.0"
 version = "0.1.0"
 
 [profile.release]

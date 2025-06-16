@@ -8,7 +8,8 @@
 
 A collection of crates utilities and support for ISO 17442 Legal Entity IDs.
 
-|= Crate =|= Usage =|
+| Crate | Usage |
+|-------|-------|
 | `iso17442-types` | Core LEI types |
 
 [license-link]: LICENSE

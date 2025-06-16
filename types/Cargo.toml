@@ -9,5 +9,14 @@ repository.workspace = true
 rust-version.workspace = true
 version.workspace = true
 
+[features]
+default = ["alloc"]
+alloc = []
+
 [dependencies]
+ref-cast.workspace = true
 thiserror.workspace = true
+yare.workspace = true
+
+[lints]
+workspace = true
