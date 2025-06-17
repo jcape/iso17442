@@ -78,6 +78,11 @@ jobs:
         rust:
           - stable
           - beta
+        features:
+          - alloc,serde
+          - serde
+          - alloc
+          - none
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@master
@@ -85,10 +90,18 @@ jobs:
           toolchain: ${{ matrix.rust }}
       - uses: r7kamura/rust-problem-matchers@v1
       - run: |
-          cargo +${{ matrix.rust }} build \
-            --workspace \
-            --all-features \
-            --release
+          if [ ${{ matrix.features }} == "none" ]; then
+            cargo +${{ matrix.rust }} build \
+              --workspace \
+              --release \
+              --no-default-features
+          else
+            cargo +${{ matrix.rust }} build \
+              --workspace \
+              --release \
+              --no-default-features \
+              --features "${{ matrix.features }}"
+          endif
 
   doc:
     runs-on: ubuntu-latest

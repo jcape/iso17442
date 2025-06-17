@@ -11,7 +11,7 @@ version.workspace = true
 
 [features]
 default = ["alloc", "serde"]
-alloc = ["serde/alloc"]
+alloc = ["serde?/alloc"]
 serde = ["dep:serde"]
 
 [dependencies]
