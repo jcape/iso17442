@@ -6,7 +6,8 @@
     "CARGO_PROFILE_DEV_BUILD_OVERRIDE_DEBUG": "true",
     "EDITOR": "code --reuse-window --wait",
     "CARGO_HOME": "/workspaces/iso17442/.cache/cargo",
-    "PRE_COMMIT_HOME": "/workspaces/iso17442/.cache/pre-commit"
+    "PRE_COMMIT_HOME": "/workspaces/iso17442/.cache/pre-commit",
+    "RUSTC_WRAPPER": "sccache"
   },
   "containerUser": "vscode",
   "customizations": {
@@ -46,9 +47,11 @@
   "name": "iso17442",
   "privileged": true,
   "postAttachCommand": "/workspaces/iso17442/.devcontainer/post-attach.sh",
+  "postCreateCommand": "/workspaces/iso17442/.devcontainer/post-create.sh",
   "remoteEnv": {
     "CARGO_HOME": "/workspaces/iso17442/.cache/cargo",
-    "PRE_COMMIT_HOME": "/workspaces/iso17442/.cache/pre-commit"
+    "PRE_COMMIT_HOME": "/workspaces/iso17442/.cache/pre-commit",
+    "RUSTC_WRAPPER": "sccache"
   },
   "securityOpt": [
     "seccomp=unconfined"

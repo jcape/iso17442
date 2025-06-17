@@ -3,6 +3,8 @@ default_install_hook_types:
   - pre-commit
   - commit-msg
 
+exclude: ^LICENSE
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
@@ -35,6 +37,7 @@ repos:
     rev: v0.17.2
     hooks:
       - id: markdownlint-cli2
+        language_version: lts
   - repo: https://github.com/adrienverge/yamllint.git
     rev: v1.35.1
     hooks:
