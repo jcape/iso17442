@@ -101,7 +101,7 @@ jobs:
               --release \
               --no-default-features \
               --features "${{ matrix.features }}"
-          endif
+          fi
 
   doc:
     runs-on: ubuntu-latest
