@@ -3,15 +3,20 @@
 #![doc = include_str!("../README.md")]
 #![no_std]
 
-use core::{borrow::Borrow, num::ParseIntError, str::FromStr};
+use core::{
+    borrow::Borrow,
+    fmt::{Display, Formatter, Result as FmtResult},
+    num::ParseIntError,
+    str::FromStr,
+};
 use ref_cast::{RefCastCustom, ref_cast_custom};
 use thiserror::Error as ThisError;
 
-#[cfg(feature = "alloc")]
-extern crate alloc;
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
 
 #[cfg(feature = "alloc")]
-use alloc::borrow::ToOwned;
+mod alloc;
 
 /// The size of a Legal Entity ID
 const LEI_SIZE: usize = 20;
@@ -92,6 +97,7 @@ const fn validate(bytes: &[u8]) -> Result<(), Error> {
 
 /// An enumeration of errors
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, ThisError)]
+#[cfg_attr(feature = "serde", derive(Deserialize, Serialize))]
 pub enum Error {
     /// The string has the wrong length for an LEI.
     #[error("The string has the wrong length for an LEI.")]
@@ -160,17 +166,21 @@ impl AsRef<[u8]> for lei {
     }
 }
 
-#[cfg(feature = "alloc")]
-impl ToOwned for lei {
-    type Owned = Lei;
+impl AsRef<str> for lei {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
 
-    fn to_owned(&self) -> Self::Owned {
-        Lei::from_bytes_unchecked(&self.0)
+impl Display for lei {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        write!(f, "{}", self.as_str())
     }
 }
 
 /// An owned Legal Entity ID
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[cfg_attr(feature = "serde", derive(Deserialize, Serialize))]
 #[repr(transparent)]
 pub struct Lei([u8; LEI_SIZE]);
 
@@ -244,6 +254,12 @@ impl FromStr for Lei {
 impl Borrow<lei> for Lei {
     fn borrow(&self) -> &lei {
         lei::ref_cast(&self.0)
+    }
+}
+
+impl Display for Lei {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        write!(f, "{}", self.as_str())
     }
 }
 

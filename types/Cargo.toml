@@ -10,11 +10,13 @@ rust-version.workspace = true
 version.workspace = true
 
 [features]
-default = ["alloc"]
-alloc = []
+default = ["alloc", "serde"]
+alloc = ["serde/alloc"]
+serde = ["dep:serde"]
 
 [dependencies]
 ref-cast.workspace = true
+serde = { version = "1.0", default-features = false, features = ["derive"], optional = true}
 thiserror.workspace = true
 yare.workspace = true
 
