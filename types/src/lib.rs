@@ -17,6 +17,7 @@ use core::{
     borrow::Borrow,
     fmt::{Display, Formatter, Result as FmtResult},
     num::ParseIntError,
+    ops::Deref,
     str::FromStr,
 };
 use ref_cast::{RefCastCustom, ref_cast_custom};
@@ -28,8 +29,14 @@ const LEI_SIZE: usize = 20;
 /// The size of an LOU
 const ISSUER_SIZE: usize = 4;
 
+const LOU_START: usize = 0;
+const LOU_END: usize = LOU_START + ISSUER_SIZE;
+
 /// The size of an entry
 const ID_SIZE: usize = 14;
+
+const ID_START: usize = LOU_END;
+const ID_END: usize = ID_START + ID_SIZE;
 
 /// The size of the checked portion of an LEI
 const CHECKED_SIZE: usize = ISSUER_SIZE + ID_SIZE;
@@ -121,6 +128,7 @@ pub enum Error {
 }
 
 impl From<ParseIntError> for Error {
+    #[inline(always)]
     fn from(_value: ParseIntError) -> Self {
         Self::CheckDigitParse
     }
@@ -137,6 +145,7 @@ impl lei {
     pub(crate) const fn ref_cast(bytes: &[u8]) -> &Self;
 
     /// Create a new LEI reference from a byte slice.
+    #[inline(always)]
     pub const fn from_bytes(bytes: &[u8]) -> Result<&Self, Error> {
         if let Err(e) = validate(bytes) {
             Err(e)
@@ -149,12 +158,6 @@ impl lei {
     #[inline(always)]
     pub const fn from_str_slice(s: &str) -> Result<&Self, Error> {
         lei::from_bytes(s.as_bytes())
-    }
-
-    /// Create a new LEI reference from an owned LEI value
-    #[inline(always)]
-    pub const fn from_lei(l: &Lei) -> &Self {
-        lei::ref_cast(l.as_bytes())
     }
 
     /// Get a reference to the byte slice backing this string.
@@ -170,6 +173,43 @@ impl lei {
         // SAFETY: The validate function ensures that only ascii uppercase and digit characters are
         // contined in this slice
         unsafe { str::from_utf8_unchecked(&self.0) }
+    }
+
+    /// Split this LEI into three parts: issuer, ID, and check digit.
+    pub const fn split(&self) -> (&str, &str, u8) {
+        // SAFETY: The validate function ensures that only ascii uppercase and digit characters are
+        // contined in this slice
+        let whole = self.as_str();
+
+        let (issuer, remainder) = whole.split_at(LOU_END);
+        let (id, check_digits) = remainder.split_at(ID_END);
+
+        if let Ok(val) = u8::from_str_radix(check_digits, 10) {
+            (issuer, id, val)
+        } else {
+            panic!("Unparseable check digits somehow passed validation.");
+        }
+    }
+
+    /// The issuer of this LEI as a string slice.
+    #[inline(always)]
+    pub const fn lou(&self) -> &str {
+        let (issuer, _remainder) = self.as_str().split_at(LOU_END);
+        issuer
+    }
+
+    /// The ID part of this LEI as a string slice.
+    #[inline(always)]
+    pub const fn id(&self) -> &str {
+        let (_issuer, remainder) = self.as_str().split_at(LOU_END);
+        let (id, _remainder) = remainder.split_at(ID_END);
+        id
+    }
+
+    /// The check digit of this LEI, as an unsigned integer between 2 and 97.
+    #[inline(always)]
+    pub const fn check_digits(&self) -> u8 {
+        self.split().2
     }
 }
 
@@ -194,19 +234,17 @@ impl Display for lei {
     }
 }
 
-impl<'l> From<&'l Lei> for &'l lei {
-    #[inline(always)]
-    fn from(value: &'l Lei) -> &'l lei {
-        lei::ref_cast(value.as_bytes())
-    }
-}
-
 /// An owned Legal Entity ID
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[repr(transparent)]
 pub struct Lei([u8; LEI_SIZE]);
 
 impl Lei {
+    /// Create a new owned LEI from the given LEI borrow.
+    pub const fn from_lei(src: &lei) -> Self {
+        Self::from_bytes_unchecked(src.as_bytes())
+    }
+
     /// Create a new owned Legal Entity ID from the give byte slice.
     ///
     /// This will copy the bytes into a new owned LEI structure.
@@ -268,39 +306,41 @@ impl Lei {
         Self::from_bytes(src.as_bytes())
     }
 
-    /// Create a new owned LEI from the given slice.
-    #[inline(always)]
-    pub const fn from_lei(l: &lei) -> Self {
-        Self::from_bytes_unchecked(l.as_bytes())
-    }
-
-    /// Create a new owned LEI from the given slice.
-    #[inline(always)]
-    pub const fn as_lei(&self) -> &lei {
-        lei::ref_cast(&self.0)
-    }
-
-    /// Get access to the inner bytes of this LEI as a byte slice.
-    #[inline(always)]
-    pub const fn as_bytes(&self) -> &[u8] {
-        &self.0
-    }
-
-    /// Get a reference to this LEI as a string slice
-    #[allow(unsafe_code)]
-    #[inline(always)]
-    pub const fn as_str(&self) -> &str {
-        // SAFETY: the validation function ensures that bytes living in this object are US-ASCII
-        //         and therefore UTF-8
-        unsafe { str::from_utf8_unchecked(&self.0) }
-    }
-
     /// Copy the given slice into bytes
     pub(crate) const fn from_bytes_unchecked(slice: &[u8]) -> Self {
         let mut bytes = [0u8; LEI_SIZE];
         bytes.copy_from_slice(slice);
 
         Self(bytes)
+    }
+}
+
+impl Borrow<lei> for Lei {
+    #[inline(always)]
+    fn borrow(&self) -> &lei {
+        self
+    }
+}
+
+impl Deref for Lei {
+    type Target = lei;
+
+    fn deref(&self) -> &Self::Target {
+        lei::ref_cast(&self.0)
+    }
+}
+
+impl Display for Lei {
+    #[inline(always)]
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        write!(f, "{}", self.as_str())
+    }
+}
+
+impl From<&lei> for Lei {
+    #[inline(always)]
+    fn from(value: &lei) -> Self {
+        Lei::from_lei(value)
     }
 }
 
@@ -322,32 +362,12 @@ impl TryFrom<&[u8]> for Lei {
     }
 }
 
-impl From<&lei> for Lei {
-    #[inline(always)]
-    fn from(value: &lei) -> Self {
-        Self::from_lei(value)
-    }
-}
-
 impl FromStr for Lei {
     type Err = Error;
 
     #[inline(always)]
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Self::from_str_slice(s)
-    }
-}
-
-impl Borrow<lei> for Lei {
-    #[inline(always)]
-    fn borrow(&self) -> &lei {
-        self.as_lei()
-    }
-}
-
-impl Display for Lei {
-    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
-        write!(f, "{}", self.as_str())
     }
 }
 

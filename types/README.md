@@ -27,10 +27,9 @@ use core::str::FromStr;
 
 const LEI_STR: &str = "YZ83GD8L7GG84979J516";
 
-let l = Lei::from_str(LEI_STR).expect("Could not parse LEI");
-let bl = l.as_lei();
+let l = lei::from_str_slice(LEI_STR).expect("Could not parse LEI");
 
-assert_eq!(bl.as_str(), LEI_STR);
+assert_eq!(l.as_str(), LEI_STR);
 ```
 
 Both of these types are fully usable in the `const` context, making them suitable for use by static data.

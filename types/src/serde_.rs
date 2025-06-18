@@ -124,6 +124,7 @@ mod test {
     extern crate std;
 
     use crate::{Lei, lei};
+    use core::ops::Deref;
     use std::{collections::HashMap, string::String};
 
     const LEI_VALUE: &str = "YZ83GD8L7GG84979J516";
@@ -143,6 +144,6 @@ mod test {
         let val = serde_json::from_str::<HashMap<String, Lei>>(&out)
             .expect("Could not deserialize from JSON");
 
-        assert_eq!(val.get("lei").map(lei::from_lei), Some(l));
+        assert_eq!(val.get("lei").map(Deref::deref), Some(l));
     }
 }
