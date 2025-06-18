@@ -1,6 +1,8 @@
 //! Serde Support
 
 use crate::{Error, Lei, lei};
+#[cfg(feature = "alloc")]
+use alloc::{string::String, vec::Vec};
 use core::fmt::{Formatter, Result as FmtResult};
 use serde::{
     Deserialize, Deserializer, Serialize, Serializer,
@@ -66,6 +68,16 @@ impl<'de> Visitor<'de> for OwnedLeiVisitor {
 
     fn expecting(&self, formatter: &mut Formatter) -> FmtResult {
         formatter.write_str("a LEI string")
+    }
+
+    #[cfg(feature = "alloc")]
+    fn visit_string<E: DeError>(self, v: String) -> Result<Self::Value, E> {
+        self.visit_str(&v)
+    }
+
+    #[cfg(feature = "alloc")]
+    fn visit_byte_buf<E: DeError>(self, v: Vec<u8>) -> Result<Self::Value, E> {
+        self.visit_bytes(&v)
     }
 
     fn visit_str<E: DeError>(self, v: &str) -> Result<Self::Value, E> {
