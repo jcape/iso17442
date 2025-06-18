@@ -3,6 +3,16 @@
 #![doc = include_str!("../README.md")]
 #![no_std]
 
+#[cfg(feature = "alloc")]
+extern crate alloc;
+
+#[cfg(feature = "alloc")]
+mod alloc_;
+#[cfg(feature = "serde")]
+mod serde_;
+
+#[cfg(feature = "serde")]
+use ::serde::{Deserialize, Serialize};
 use core::{
     borrow::Borrow,
     fmt::{Display, Formatter, Result as FmtResult},
@@ -11,12 +21,6 @@ use core::{
 };
 use ref_cast::{RefCastCustom, ref_cast_custom};
 use thiserror::Error as ThisError;
-
-#[cfg(feature = "serde")]
-use serde::{Deserialize, Serialize};
-
-#[cfg(feature = "alloc")]
-mod alloc;
 
 /// The size of a Legal Entity ID
 const LEI_SIZE: usize = 20;
@@ -38,7 +42,7 @@ const CHECK_ONES_POS: usize = 19;
 
 const fn validate(bytes: &[u8]) -> Result<(), Error> {
     if bytes.len() != LEI_SIZE {
-        return Err(Error::InvalidLength);
+        return Err(Error::InvalidLength(bytes.len(), LEI_SIZE));
     }
 
     let mut check_str_bytes = [0u8; LEI_SIZE * 2];
@@ -101,7 +105,7 @@ const fn validate(bytes: &[u8]) -> Result<(), Error> {
 pub enum Error {
     /// The string has the wrong length for an LEI.
     #[error("The string has the wrong length for an LEI.")]
-    InvalidLength,
+    InvalidLength(usize, usize),
 
     /// The string contains invalid characters for an LEI.
     #[error("The string contains an invalid character at {0} for an LEI.")]
@@ -133,7 +137,7 @@ impl lei {
     pub(crate) const fn ref_cast(bytes: &[u8]) -> &Self;
 
     /// Create a new LEI reference from a byte slice.
-    pub fn from_bytes(bytes: &[u8]) -> Result<&Self, Error> {
+    pub const fn from_bytes(bytes: &[u8]) -> Result<&Self, Error> {
         if let Err(e) = validate(bytes) {
             Err(e)
         } else {
@@ -141,9 +145,14 @@ impl lei {
         }
     }
 
-    /// Create a new LEI reference fomr a string slice.
-    pub fn from_str_slice(s: &str) -> Result<&Self, Error> {
+    /// Create a new LEI reference from a string slice.
+    pub const fn from_str_slice(s: &str) -> Result<&Self, Error> {
         lei::from_bytes(s.as_bytes())
+    }
+
+    /// Create a new LEI reference from an owned LEI value
+    pub const fn from_lei(l: &Lei) -> &Self {
+        lei::ref_cast(l.as_bytes())
     }
 
     /// Get a reference to the byte slice backing this string.
@@ -178,9 +187,14 @@ impl Display for lei {
     }
 }
 
+impl<'l> From<&'l Lei> for &'l lei {
+    fn from(value: &'l Lei) -> &'l lei {
+        lei::ref_cast(value.as_bytes())
+    }
+}
+
 /// An owned Legal Entity ID
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
-#[cfg_attr(feature = "serde", derive(Deserialize, Serialize))]
 #[repr(transparent)]
 pub struct Lei([u8; LEI_SIZE]);
 
@@ -188,7 +202,18 @@ impl Lei {
     /// Create a new owned Legal Entity ID from the give byte slice.
     ///
     /// This will copy the bytes into a new owned LEI structure.
-    pub fn from_bytes(bytes: &[u8]) -> Result<Self, Error> {
+    ///
+    /// # Examples
+    /// ```
+    /// use iso17442_types::Lei;
+    ///
+    /// const LEI_BYTES: &[u8] = b"YZ83GD8L7GG84979J516";
+    ///
+    /// let l = Lei::from_bytes(LEI_BYTES).expect("Could not parse LEI bytes");
+    ///
+    /// assert_eq!(LEI_BYTES, l.as_bytes());
+    /// ```
+    pub const fn from_bytes(bytes: &[u8]) -> Result<Self, Error> {
         if let Err(e) = validate(bytes) {
             Err(e)
         } else {
@@ -197,12 +222,49 @@ impl Lei {
     }
 
     /// Create a new owned LEI from the given byte array.
-    pub fn from_byte_array(bytes: [u8; LEI_SIZE]) -> Result<Self, Error> {
+    ///
+    /// # Examples
+    /// ```
+    /// use iso17442_types::Lei;
+    ///
+    /// const LEI_BYTES: [u8; 20] = *b"YZ83GD8L7GG84979J516";
+    ///
+    /// let l = Lei::from_byte_array(LEI_BYTES.clone()).expect("Could not parse LEI bytes");
+    ///
+    /// assert_eq!(&LEI_BYTES, l.as_bytes());
+    /// ```
+    pub const fn from_byte_array(bytes: [u8; LEI_SIZE]) -> Result<Self, Error> {
         if let Err(e) = validate(&bytes) {
             Err(e)
         } else {
             Ok(Self(bytes))
         }
+    }
+
+    /// Create a new owned LEI from the given string slice.
+    ///
+    /// # Examples
+    /// ```
+    /// use iso17442_types::Lei;
+    ///
+    /// const LEI_STR: &str = "YZ83GD8L7GG84979J516";
+    ///
+    /// let l = Lei::from_str_slice(LEI_STR).expect("Could not parse LEI bytes");
+    ///
+    /// assert_eq!(LEI_STR, l.as_str());
+    /// ```
+    pub const fn from_str_slice(src: &str) -> Result<Self, Error> {
+        Self::from_bytes(src.as_bytes())
+    }
+
+    /// Create a new owned LEI from the given slice.
+    pub const fn from_lei(l: &lei) -> Self {
+        Self::from_bytes_unchecked(l.as_bytes())
+    }
+
+    /// Create a new owned LEI from the given slice.
+    pub const fn as_lei(&self) -> &lei {
+        lei::ref_cast(&self.0)
     }
 
     /// Get access to the inner bytes of this LEI as a byte slice.
@@ -243,6 +305,12 @@ impl TryFrom<&[u8]> for Lei {
     }
 }
 
+impl From<&lei> for Lei {
+    fn from(value: &lei) -> Self {
+        Self::from_lei(value)
+    }
+}
+
 impl FromStr for Lei {
     type Err = Error;
 
@@ -266,18 +334,24 @@ impl Display for Lei {
 #[cfg(test)]
 mod test {
     use super::*;
+    use alloc::borrow::ToOwned;
+    use core::{borrow::Borrow, str::FromStr};
 
     #[yare::parameterized(
         ok_1 = { "YZ83GD8L7GG84979J516", None },
         bad_check_1 = { "YZ83GD8L7GG84979J563", Some(Error::CheckDigitFail) },
         bad_check_2 = { "315700K7NYVSQJNTN401", Some(Error::CheckDigitFail) },
+        missing_check = { "315700K7NYVSQJNTN4", Some(Error::InvalidLength(18, LEI_SIZE)) },
+        blank = { "", Some(Error::InvalidLength(0, LEI_SIZE)) },
     )]
     fn check(s: &str, err: Option<Error>) {
         let result = lei::from_str_slice(s);
         assert_eq!(err, result.err());
 
-        if let Ok(_l) = result {
-            //
+        if let Ok(l) = result {
+            let owned = Lei::from_str(s).expect("Could not parse as owned?");
+            assert_eq!(l.to_owned(), owned);
+            assert_eq!(<Lei as Borrow<lei>>::borrow(&owned), l);
         }
     }
 }

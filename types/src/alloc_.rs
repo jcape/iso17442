@@ -1,7 +1,5 @@
 //! Alloc-dependent features
 
-extern crate alloc;
-
 use crate::{Lei, lei};
 use alloc::borrow::ToOwned;
 
