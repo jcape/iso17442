@@ -146,22 +146,26 @@ impl lei {
     }
 
     /// Create a new LEI reference from a string slice.
+    #[inline(always)]
     pub const fn from_str_slice(s: &str) -> Result<&Self, Error> {
         lei::from_bytes(s.as_bytes())
     }
 
     /// Create a new LEI reference from an owned LEI value
+    #[inline(always)]
     pub const fn from_lei(l: &Lei) -> &Self {
         lei::ref_cast(l.as_bytes())
     }
 
     /// Get a reference to the byte slice backing this string.
+    #[inline(always)]
     pub const fn as_bytes(&self) -> &[u8] {
         &self.0
     }
 
     /// Get a reference to the validated LEI reference as a string slice.
     #[allow(unsafe_code)]
+    #[inline(always)]
     pub const fn as_str(&self) -> &str {
         // SAFETY: The validate function ensures that only ascii uppercase and digit characters are
         // contined in this slice
@@ -170,24 +174,28 @@ impl lei {
 }
 
 impl AsRef<[u8]> for lei {
+    #[inline(always)]
     fn as_ref(&self) -> &[u8] {
         self.as_bytes()
     }
 }
 
 impl AsRef<str> for lei {
+    #[inline(always)]
     fn as_ref(&self) -> &str {
         self.as_str()
     }
 }
 
 impl Display for lei {
+    #[inline(always)]
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         write!(f, "{}", self.as_str())
     }
 }
 
 impl<'l> From<&'l Lei> for &'l lei {
+    #[inline(always)]
     fn from(value: &'l Lei) -> &'l lei {
         lei::ref_cast(value.as_bytes())
     }
@@ -213,6 +221,7 @@ impl Lei {
     ///
     /// assert_eq!(LEI_BYTES, l.as_bytes());
     /// ```
+    #[inline(always)]
     pub const fn from_bytes(bytes: &[u8]) -> Result<Self, Error> {
         if let Err(e) = validate(bytes) {
             Err(e)
@@ -233,6 +242,7 @@ impl Lei {
     ///
     /// assert_eq!(&LEI_BYTES, l.as_bytes());
     /// ```
+    #[inline(always)]
     pub const fn from_byte_array(bytes: [u8; LEI_SIZE]) -> Result<Self, Error> {
         if let Err(e) = validate(&bytes) {
             Err(e)
@@ -253,27 +263,32 @@ impl Lei {
     ///
     /// assert_eq!(LEI_STR, l.as_str());
     /// ```
+    #[inline(always)]
     pub const fn from_str_slice(src: &str) -> Result<Self, Error> {
         Self::from_bytes(src.as_bytes())
     }
 
     /// Create a new owned LEI from the given slice.
+    #[inline(always)]
     pub const fn from_lei(l: &lei) -> Self {
         Self::from_bytes_unchecked(l.as_bytes())
     }
 
     /// Create a new owned LEI from the given slice.
+    #[inline(always)]
     pub const fn as_lei(&self) -> &lei {
         lei::ref_cast(&self.0)
     }
 
     /// Get access to the inner bytes of this LEI as a byte slice.
+    #[inline(always)]
     pub const fn as_bytes(&self) -> &[u8] {
         &self.0
     }
 
     /// Get a reference to this LEI as a string slice
     #[allow(unsafe_code)]
+    #[inline(always)]
     pub const fn as_str(&self) -> &str {
         // SAFETY: the validation function ensures that bytes living in this object are US-ASCII
         //         and therefore UTF-8
@@ -292,6 +307,7 @@ impl Lei {
 impl TryFrom<[u8; LEI_SIZE]> for Lei {
     type Error = Error;
 
+    #[inline(always)]
     fn try_from(bytes: [u8; LEI_SIZE]) -> Result<Self, Self::Error> {
         Self::from_byte_array(bytes)
     }
@@ -300,12 +316,14 @@ impl TryFrom<[u8; LEI_SIZE]> for Lei {
 impl TryFrom<&[u8]> for Lei {
     type Error = Error;
 
+    #[inline(always)]
     fn try_from(bytes: &[u8]) -> Result<Self, Self::Error> {
         Self::from_bytes(bytes)
     }
 }
 
 impl From<&lei> for Lei {
+    #[inline(always)]
     fn from(value: &lei) -> Self {
         Self::from_lei(value)
     }
@@ -314,14 +332,16 @@ impl From<&lei> for Lei {
 impl FromStr for Lei {
     type Err = Error;
 
+    #[inline(always)]
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Self::from_bytes(s.as_bytes())
+        Self::from_str_slice(s)
     }
 }
 
 impl Borrow<lei> for Lei {
+    #[inline(always)]
     fn borrow(&self) -> &lei {
-        lei::ref_cast(&self.0)
+        self.as_lei()
     }
 }
 
