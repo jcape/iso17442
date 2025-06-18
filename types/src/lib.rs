@@ -359,6 +359,7 @@ mod test {
 
     #[yare::parameterized(
         ok_1 = { "YZ83GD8L7GG84979J516", None },
+        poo = { "YZ83GD8L7GG849💩16", Some(Error::InvalidCharacter(14)) },
         bad_check_1 = { "YZ83GD8L7GG84979J563", Some(Error::CheckDigitFail) },
         bad_check_2 = { "315700K7NYVSQJNTN401", Some(Error::CheckDigitFail) },
         missing_check = { "315700K7NYVSQJNTN4", Some(Error::InvalidLength(18, LEI_SIZE)) },

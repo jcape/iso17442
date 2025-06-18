@@ -16,7 +16,7 @@ A collection of crates utilities and support for ISO 17442 Legal Entity IDs.
 [license-image]: https://img.shields.io/github/license/jcape/iso17442?style=flat-square
 [deps-image]: https://deps.rs/repo/github/jcape/iso17442/status.svg?style=flat-square
 [deps-link]: https://deps.rs/repo/github/jcape/iso17442
-[codecov-image]: https://img.shields.io/codecov/c/github/jcape/iso17442/develop?style=flat-square
+[codecov-image]: https://img.shields.io/codecov/c/github/jcape/iso17442/main?style=flat-square
 [codecov-link]: https://codecov.io/gh/jcape/iso17442
 [gha-image]: https://img.shields.io/github/actions/workflow/status/jcape/iso17442/ci.yml?branch=main&style=flat-square
 [gha-link]: https://github.com/jcape/iso17442/actions/workflows/ci.yml?query=branch%3Amain
