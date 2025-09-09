@@ -20,6 +20,20 @@ repos:
       - id: fix-byte-order-marker
       - id: mixed-line-ending
       - id: trailing-whitespace
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.0.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args: []
+  - repo: https://github.com/mpalmer/action-validator
+    rev: v0.7.0
+    hooks:
+      - id: action-validator
+  - repo: https://github.com/EmbarkStudios/cargo-deny
+    rev: 0.18.4
+    hooks:
+      - id: cargo-deny
   - repo: https://github.com/backplane/pre-commit-rust-hooks
     rev: v1.1.0
     hooks:
@@ -27,12 +41,6 @@ repos:
       - id: check
       - id: clippy
       - id: test
-  - repo: https://github.com/compilerla/conventional-pre-commit
-    rev: v4.0.0
-    hooks:
-      - id: conventional-pre-commit
-        stages: [commit-msg]
-        args: []
   - repo: https://github.com/DavidAnson/markdownlint-cli2
     rev: v0.17.2
     hooks:

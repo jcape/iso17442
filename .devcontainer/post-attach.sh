@@ -8,6 +8,8 @@ unset RUSTC_WRAPPER
 cargo binstall -q -y --force sccache
 export RUSTC_WRAPPER="$RUST_WRAPPER_save"
 
+cargo binstall -q -y --force action-validator
+cargo binstall -q -y --force cargo-deny
 cargo binstall -q -y --force cargo-semver-checks
 cargo binstall -q -y --force release-plz
 
