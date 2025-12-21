@@ -190,9 +190,11 @@ impl lei {
 
     /// Split this LEI into three parts: issuer, ID, and check digit.
     #[must_use]
+    #[expect(
+        clippy::missing_panics_doc,
+        reason = "Invariants failure in check digit validation"
+    )]
     pub const fn split(&self) -> (&str, &str, u8) {
-        // SAFETY: The validate function ensures that only ascii uppercase and digit characters are
-        // contined in this slice
         let whole = self.as_str();
 
         let (issuer, remainder) = whole.split_at(LOU_END);
