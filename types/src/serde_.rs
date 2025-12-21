@@ -20,7 +20,7 @@ struct LeiVisitor;
 impl<'de> Visitor<'de> for LeiVisitor {
     type Value = &'de lei;
 
-    fn expecting(&self, formatter: &mut Formatter) -> FmtResult {
+    fn expecting(&self, formatter: &mut Formatter<'_>) -> FmtResult {
         formatter.write_str("a borrowed lei string")
     }
 
@@ -34,7 +34,7 @@ impl<'de> Visitor<'de> for LeiVisitor {
                 DeError::invalid_length(len, &"20 ASCII digits and upper-case characters")
             }
             Error::InvalidCharacter(pos) => DeError::invalid_value(
-                Unexpected::Char(char::from_u32(v[pos] as u32).unwrap_or_default()),
+                Unexpected::Char(char::from_u32(u32::from(v[pos])).unwrap_or_default()),
                 &"A-Z, 0-9",
             ),
             Error::CheckDigitParse => DeError::invalid_value(
@@ -66,7 +66,7 @@ struct OwnedLeiVisitor;
 impl<'de> Visitor<'de> for OwnedLeiVisitor {
     type Value = Lei;
 
-    fn expecting(&self, formatter: &mut Formatter) -> FmtResult {
+    fn expecting(&self, formatter: &mut Formatter<'_>) -> FmtResult {
         formatter.write_str("a LEI string")
     }
 
@@ -98,7 +98,7 @@ impl<'de> Visitor<'de> for OwnedLeiVisitor {
                 DeError::invalid_length(len, &"20 ASCII digits and upper-case characters")
             }
             Error::InvalidCharacter(pos) => DeError::invalid_value(
-                Unexpected::Char(char::from_u32(v[pos] as u32).unwrap_or_default()),
+                Unexpected::Char(char::from_u32(u32::from(v[pos])).unwrap_or_default()),
                 &"A-Z, 0-9",
             ),
             Error::CheckDigitParse => DeError::invalid_value(

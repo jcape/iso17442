@@ -3,7 +3,15 @@ name = "iso17442-types"
 description = "ISO 17442 Types"
 readme = "README.md"
 authors.workspace = true
+categories = [
+  "data-structures",
+  "finance",
+  "internationalization",
+  "no-std",
+  "no-std::no-alloc",
+]
 edition.workspace = true
+keywords = ["iso17442", "lei"]
 license.workspace = true
 repository.workspace = true
 rust-version.workspace = true

@@ -31,9 +31,10 @@ repos:
     hooks:
       - id: action-validator
   - repo: https://github.com/EmbarkStudios/cargo-deny
-    rev: 0.18.4
+    rev: 0.18.9
     hooks:
       - id: cargo-deny
+        args: ["--all-features", "check"]
   - repo: https://github.com/backplane/pre-commit-rust-hooks
     rev: v1.1.0
     hooks:

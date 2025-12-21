@@ -9,12 +9,18 @@ thiserror = { version = "2.0.12", default-features = false }
 yare = "3"
 
 [workspace.lints.clippy]
-missing_safety_doc = "forbid"
+cargo = "warn"
+complexity = "warn"
+pedantic = "warn"
+perf = "deny"
+style = "warn"
 
 [workspace.lints.rust]
+missing_debug_implementations = "deny"
+missing_docs = "deny"
+unreachable_pub = "deny"
+rust_2018_idioms = "deny"
 unsafe_code = "deny"
-missing_debug_implementations = "forbid"
-missing_docs = "forbid"
 
 [workspace.metadata.release]
 shared-version = true
