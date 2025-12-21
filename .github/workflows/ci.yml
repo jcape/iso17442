@@ -44,9 +44,9 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           cache-on-failure: "true"
-      - uses: EmbarkStudios/cargo-deny-action@v1
+      - uses: EmbarkStudios/cargo-deny-action@v2
         with:
-          rust-version: "1.85.1"
+          rust-version: "1.92.0"
           command: check ${{ matrix.check }}
 
   clippy:
