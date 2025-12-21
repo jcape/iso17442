@@ -6,8 +6,7 @@
     "CARGO_PROFILE_DEV_BUILD_OVERRIDE_DEBUG": "true",
     "EDITOR": "code --reuse-window --wait",
     "CARGO_HOME": "/workspaces/iso17442/.cache/cargo",
-    "PRE_COMMIT_HOME": "/workspaces/iso17442/.cache/pre-commit",
-    "RUSTC_WRAPPER": "sccache"
+    "PRE_COMMIT_HOME": "/workspaces/iso17442/.cache/pre-commit"
   },
   "containerUser": "vscode",
   "customizations": {
@@ -41,17 +40,17 @@
     "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/devcontainers/features/rust:1": {
       "profile": "complete"
-    },
-    "ghcr.io/devcontainers-extra/features/pre-commit:2": {}
+    }
   },
   "name": "iso17442",
   "privileged": true,
   "postAttachCommand": "/workspaces/iso17442/.devcontainer/post-attach.sh",
   "postCreateCommand": "/workspaces/iso17442/.devcontainer/post-create.sh",
   "remoteEnv": {
+    "CARGO_PROFILE_DEV_BUILD_OVERRIDE_DEBUG": "true",
+    "EDITOR": "code --reuse-window --wait",
     "CARGO_HOME": "/workspaces/iso17442/.cache/cargo",
-    "PRE_COMMIT_HOME": "/workspaces/iso17442/.cache/pre-commit",
-    "RUSTC_WRAPPER": "sccache"
+    "PRE_COMMIT_HOME": "/workspaces/iso17442/.cache/pre-commit"
   },
   "securityOpt": [
     "seccomp=unconfined"
