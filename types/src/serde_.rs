@@ -1,13 +1,14 @@
 //! Serde Support
 
 use crate::{Error, Lei, lei};
-#[cfg(feature = "alloc")]
-use alloc::{string::String, vec::Vec};
 use core::fmt::{Formatter, Result as FmtResult};
 use serde::{
     Deserialize, Deserializer, Serialize, Serializer,
     de::{Error as DeError, Unexpected, Visitor},
 };
+
+#[cfg(feature = "alloc")]
+use alloc::{string::String, vec::Vec};
 
 impl Serialize for &lei {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
@@ -121,11 +122,9 @@ impl<'de> Deserialize<'de> for Lei {
 
 #[cfg(test)]
 mod test {
-    extern crate std;
-
     use crate::{Lei, lei};
+    use alloc::{collections::BTreeMap, string::String};
     use core::ops::Deref;
-    use std::{collections::HashMap, string::String};
 
     const LEI_VALUE: &str = "YZ83GD8L7GG84979J516";
 
@@ -141,7 +140,7 @@ mod test {
         assert_eq!("{\"lei\":\"YZ83GD8L7GG84979J516\"}", &out);
 
         // deserialize
-        let val = serde_json::from_str::<HashMap<String, Lei>>(&out)
+        let val = serde_json::from_str::<BTreeMap<String, Lei>>(&out)
             .expect("Could not deserialize from JSON");
 
         assert_eq!(val.get("lei").map(Deref::deref), Some(l));
