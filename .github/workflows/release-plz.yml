@@ -70,7 +70,7 @@ jobs:
             gh pr checkout $pr_number
 
             for pkg in $packages; do
-                crate=$(echo $pkg | sed -e 's/iso3166-//')
+                crate=$(echo $pkg | sed -e 's/iso17442-//')
                 sed -i -e "s|$pkg/[0-9.]\+|$pkg/$version|g" "$crate/README.md"
                 git add "$crate/README.md"
             done
