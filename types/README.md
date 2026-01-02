@@ -5,7 +5,7 @@
 -->[![Docs Status][docs-image]][docs-link]<!--
 -->[![Dependency Status][deps-image]][deps-link]
 
-This crate provides `no_std` compatible data structures for use handling ISO 17442 Legal Entity IDs. The primary type is [`Lei`](crate::Lei), which is an owned (but non-heap) representation of an LEI string. For example:
+This crate provides `no-std`, `no-alloc` compatible data structures for use handling ISO 17442 Legal Entity IDs. The primary type is [`Lei`](crate::Lei), which is an owned (but non-heap) representation of an LEI string. For example:
 
 ```rust
 use iso17442_types::Lei;
@@ -32,13 +32,13 @@ let l = lei::from_str_slice(LEI_STR).expect("Could not parse LEI");
 assert_eq!(l.as_str(), LEI_STR);
 ```
 
-Both of these types are fully usable in the `const` context, making them suitable for use by static data.
+Both of these types are fully usable in the `const` context, making them suitable for use within static data.
 
+[license-image]: https://img.shields.io/github/license/jcape/iso17442?style=for-the-badge
 [license-link]: ../LICENSE
-[license-image]: https://img.shields.io/github/license/jcape/iso17442?style=flat-square
-[crate-image]: https://img.shields.io/crates/v/iso17442-types.svg?style=flat-square
-[crate-link]: https://crates.io/crates/iso17442-types
-[docs-image]: https://img.shields.io/docsrs/iso17442-types?style=flat-square
-[docs-link]: https://docs.rs/crate/iso17442-types
-[deps-image]: https://deps.rs/crate/iso17442-types/0.1.0/status.svg?style=flat-square
-[deps-link]: https://deps.rs/crate/iso17442-types/0.1.0
+[crate-image]: https://img.shields.io/crates/v/iso17442-types.svg?style=for-the-badge
+[crate-link]: https://crates.io/crates/iso17442-types/0.3.0
+[docs-image]: https://img.shields.io/docsrs/iso17442-types?style=for-the-badge
+[docs-link]: https://docs.rs/crate/iso17442-types/0.3.0
+[deps-image]: https://deps.rs/crate/iso17442-types/0.3.0/status.svg?style=for-the-badge
+[deps-link]: https://deps.rs/crate/iso17442-types/0.3.0
