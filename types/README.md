@@ -37,8 +37,8 @@ Both of these types are fully usable in the `const` context, making them suitabl
 [license-image]: https://img.shields.io/github/license/jcape/iso17442?style=for-the-badge
 [license-link]: ../LICENSE
 [crate-image]: https://img.shields.io/crates/v/iso17442-types.svg?style=for-the-badge
-[crate-link]: https://crates.io/crates/iso17442-types/0.3.0
+[crate-link]: https://crates.io/crates/iso17442-types/0.3.2
 [docs-image]: https://img.shields.io/docsrs/iso17442-types?style=for-the-badge
-[docs-link]: https://docs.rs/crate/iso17442-types/0.3.0
-[deps-image]: https://deps.rs/crate/iso17442-types/0.3.0/status.svg?style=for-the-badge
-[deps-link]: https://deps.rs/crate/iso17442-types/0.3.0
+[docs-link]: https://docs.rs/crate/iso17442-types/0.3.2
+[deps-image]: https://deps.rs/crate/iso17442-types/0.3.2/status.svg?style=for-the-badge
+[deps-link]: https://deps.rs/crate/iso17442-types/0.3.2
