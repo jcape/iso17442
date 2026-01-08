@@ -9,9 +9,12 @@
 A collection of crates utilities and support for ISO 17442 Legal Entity IDs.
 
 | Crate | Usage |
-|-------|-------|
-| `iso17442-types` | Core LEI types |
+| ----- | ----- |
+| [`types`][types-link] | Core LEI types |
 
+[//]: # (badges)
+
+[types-link]: https://github.com/jcape/iso17442/tree/main/types
 [license-link]: LICENSE
 [license-image]: https://img.shields.io/github/license/jcape/iso17442?style=for-the-badge
 [deps-image]: https://deps.rs/repo/github/jcape/iso17442/status.svg?style=for-the-badge
