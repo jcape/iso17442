@@ -24,4 +24,4 @@ A collection of crates utilities and support for ISO 17442 Legal Entity IDs.
 [gha-image]: https://img.shields.io/github/actions/workflow/status/jcape/iso17442/ci.yml?branch=main&style=for-the-badge
 [gha-link]: https://github.com/jcape/iso17442/actions/workflows/ci.yml?query=branch%3Amain
 [conduct-link]: CODE_OF_CONDUCT.md
-[conduct-image]: https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg?style=for-the-badge
+[conduct-image]: https://img.shields.io/badge/coc-CC%203.0-4baaaa.svg?style=for-the-badge
