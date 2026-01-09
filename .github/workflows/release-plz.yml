@@ -1,6 +1,7 @@
+---
 name: Release-plz
 
-on:
+"on":
   push:
     branches:
       - main
