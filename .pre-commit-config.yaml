@@ -30,6 +30,15 @@ repos:
       - id: conventional-pre-commit
         stages: [commit-msg]
         args: []
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.20.0
+    hooks:
+      - id: markdownlint-cli2
+        language_version: lts
+  - repo: https://github.com/adrienverge/yamllint.git
+    rev: v1.37.1
+    hooks:
+      - id: yamllint
   - repo: https://github.com/mpalmer/action-validator
     rev: v0.7.0
     hooks:
@@ -43,15 +52,35 @@ repos:
     rev: v1.2.1
     hooks:
       - id: fmt
-      - id: check
+        args:
+          - '--all'
+          - '--'
       - id: clippy
+        args:
+          - '--workspace'
+          - '--all-features'
+          - '--all-targets'
+          - '--fix'
+          - '--allow-dirty'
+          - '--'
+          - '--no-deps'
+      - id: clippy
+        args:
+          - '--workspace'
+          - '--all-features'
+          - '--all-targets'
+          - '--'
+          - '--no-deps'
       - id: test
-  - repo: https://github.com/DavidAnson/markdownlint-cli2
-    rev: v0.20.0
+        args:
+          - '--workspace'
+          - '--doc'
+  - repo: local
     hooks:
-      - id: markdownlint-cli2
-        language_version: lts
-  - repo: https://github.com/adrienverge/yamllint.git
-    rev: v1.37.1
-    hooks:
-      - id: yamllint
+      - id: cargo-nextest
+        name: cargo nextest
+        description: unit test for the project
+        entry: bash -c 'cargo nextest run --workspace --all-features'
+        language: rust
+        files: \.rs$
+        pass_filenames: false
