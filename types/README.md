@@ -34,7 +34,7 @@ assert_eq!(l.as_str(), LEI_STR);
 Both of these types are fully usable in the `const` context, making them suitable for use within static data.
 
 [crate-image]: https://img.shields.io/crates/v/iso17442-types.svg?style=for-the-badge
-[crate-link]: https://crates.io/crates/iso17442-types/0.3.2
+[crate-link]: https://crates.io/crates/iso17442-types/0.3.3
 [docs-image]: https://img.shields.io/docsrs/iso17442-types?style=for-the-badge
-[docs-link]: https://docs.rs/crate/iso17442-types/0.3.2
-[msrv-image]: https://img.shields.io/crates/msrv/iso17442-types/0.3.2?style=for-the-badge
+[docs-link]: https://docs.rs/crate/iso17442-types/0.3.3
+[msrv-image]: https://img.shields.io/crates/msrv/iso17442-types/0.3.3?style=for-the-badge
