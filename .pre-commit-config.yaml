@@ -10,15 +10,17 @@ exclude: |-
   )$
 
 repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v6.0.0
+  - repo: builtin
     hooks:
+      - id: check-added-large-files
       - id: check-case-conflict
+      - id: check-executables-have-shebangs
+      - id: check-json
       - id: check-merge-conflict
-      - id: check-shebang-scripts-are-executable
-      - id: check-vcs-permalinks
+      - id: check-symlinks
+      - id: check-toml
       - id: check-yaml
-      - id: destroyed-symlinks
+      - id: check-xml
       - id: detect-private-key
       - id: end-of-file-fixer
       - id: fix-byte-order-marker
@@ -48,39 +50,58 @@ repos:
     hooks:
       - id: cargo-deny
         args: ["--all-features", "check"]
-  - repo: https://github.com/backplane/pre-commit-rust-hooks
-    rev: v1.2.1
-    hooks:
-      - id: fmt
-        args:
-          - '--all'
-          - '--'
-      - id: clippy
-        args:
-          - '--workspace'
-          - '--all-features'
-          - '--all-targets'
-          - '--fix'
-          - '--allow-dirty'
-          - '--'
-          - '--no-deps'
-      - id: clippy
-        args:
-          - '--workspace'
-          - '--all-features'
-          - '--all-targets'
-          - '--'
-          - '--no-deps'
-      - id: test
-        args:
-          - '--workspace'
-          - '--doc'
   - repo: local
     hooks:
+      - id: cargo-fmt
+        stages: [pre-commit]
+        name: cargo fmt
+        description: unit test for the project
+        entry: bash -c 'rustup run stable cargo fmt --all --'
+        language: rust
+        files: \.rs$
+        pass_filenames: true
+      - id: clippy-fix
+        stages: [pre-commit]
+        name: cargo clippy fix
+        description: clippy fix
+        # yamllint disable-line rule:line-length
+        entry: bash -c 'rustup run stable cargo clippy --workspace --all-features --allow-dirty --fix --no-deps'
+        language: rust
+        files: \.rs$
+        pass_filenames: false
+      - id: clippy-check
+        stages: [pre-commit]
+        name: cargo clippy check
+        description: cargo clippy check
+        # yamllint disable-line rule:line-length
+        entry: bash -c 'rustup run stable cargo clippy --workspace --all-features --no-deps'
+        language: rust
+        files: \.rs$
+        pass_filenames: false
       - id: cargo-nextest
+        stages: [pre-commit]
         name: cargo nextest
         description: unit test for the project
-        entry: bash -c 'cargo nextest run --workspace --all-features'
+        # yamllint disable-line rule:line-length
+        entry: bash -c 'rustup run 1.87.0 cargo nextest run --workspace --all-features'
+        language: rust
+        files: \.rs$
+        pass_filenames: false
+      - id: cargo-doctest
+        stages: [pre-commit]
+        name: cargo doctest
+        description: doctests for the project
+        # yamllint disable-line rule:line-length
+        entry: bash -c 'rustup run 1.87.0 cargo test --workspace --all-features --doc'
+        language: rust
+        files: \.rs$
+        pass_filenames: false
+      - id: cargo-doc
+        stages: [pre-commit]
+        name: cargo doc
+        description: docs build for the project
+        # yamllint disable-line rule:line-length
+        entry: bash -c 'rustup run nightly cargo doc --workspace --all-features --no-deps'
         language: rust
         files: \.rs$
         pass_filenames: false

@@ -39,7 +39,8 @@
     "ghcr.io/devcontainers/features/git-lfs:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/devcontainers/features/rust:1": {
-      "profile": "complete"
+      "profile": "complete",
+      "version": "1.87.0"
     }
   },
   "name": "iso17442",
