@@ -34,6 +34,7 @@ jobs:
 
   deny:
     strategy:
+      fail-fast: false
       matrix:
         check:
           - advisories
@@ -46,18 +47,17 @@ jobs:
           cache-on-failure: "true"
       - uses: EmbarkStudios/cargo-deny-action@v2
         with:
-          rust-version: "1.92.0"
+          rust-version: "stable"
           command: check ${{ matrix.check }}
 
   clippy:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         rust:
           - stable
           - beta
-    # Prevent beta warnings from causing CI failure
-    continue-on-error: ${{ matrix.rust == 'beta' }}
     steps:
       - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@master
@@ -74,9 +74,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         rust:
           - stable
+          - 1.87.0
           - beta
         features:
           - alloc,serde
@@ -105,21 +107,12 @@ jobs:
 
   doc:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        rust:
-          - stable
-          - beta
-    # Prevent beta warnings from causing CI failure
-    continue-on-error: ${{ matrix.rust == 'beta' }}
     steps:
       - uses: actions/checkout@v6
-      - uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: ${{ matrix.rust }}
+      - uses: dtolnay/rust-toolchain@nightly
       - uses: r7kamura/rust-problem-matchers@v1
       - run: |
-          cargo +${{ matrix.rust }} doc \
+          cargo doc \
             --workspace \
             --release \
             --all-features \
@@ -129,7 +122,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@1.87.0
       - uses: taiki-e/install-action@cargo-nextest
       - run: |
           cargo nextest run \
@@ -148,7 +141,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@1.88.0
         with:
           components: llvm-tools-preview
       - uses: dtolnay/rust-toolchain@nightly
@@ -158,7 +151,7 @@ jobs:
       - uses: taiki-e/install-action@cargo-nextest
       - name: Run tests with coverage
         run: |
-          cargo llvm-cov nextest \
+          cargo +1.87.0 llvm-cov nextest \
             --no-report \
             --workspace \
             --all-features \
@@ -168,7 +161,7 @@ jobs:
             --no-report \
             --workspace \
             --doc
-          cargo llvm-cov report \
+          cargo +1.87.0 llvm-cov report \
             --doctests \
             --lcov \
             --output-path lcov.info
