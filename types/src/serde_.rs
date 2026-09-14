@@ -1,4 +1,4 @@
-//! Serde Support
+//! Serde Support.
 
 use crate::{Error, Lei, lei};
 use core::fmt::{Formatter, Result as FmtResult};
@@ -11,11 +11,13 @@ use serde::{
 use alloc::{string::String, vec::Vec};
 
 impl Serialize for &lei {
+    #[inline]
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         serializer.serialize_str(self.as_str())
     }
 }
 
+/// A deserialization visitor used to deserialized a typed lei borrow.
 struct LeiVisitor;
 
 impl<'de> Visitor<'de> for LeiVisitor {
@@ -51,17 +53,20 @@ impl<'de> Visitor<'de> for LeiVisitor {
 }
 
 impl<'de> Deserialize<'de> for &'de lei {
+    #[inline]
     fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         deserializer.deserialize_str(LeiVisitor)
     }
 }
 
 impl Serialize for Lei {
+    #[inline]
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         serializer.serialize_str(self.as_str())
     }
 }
 
+/// A visitor used to deserialize an owned Lei struct.
 struct OwnedLeiVisitor;
 
 impl<'de> Visitor<'de> for OwnedLeiVisitor {
@@ -115,6 +120,7 @@ impl<'de> Visitor<'de> for OwnedLeiVisitor {
 }
 
 impl<'de> Deserialize<'de> for Lei {
+    #[inline]
     fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         deserializer.deserialize_str(OwnedLeiVisitor)
     }

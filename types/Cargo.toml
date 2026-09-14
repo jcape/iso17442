@@ -1,7 +1,6 @@
 [package]
 name = "iso17442-types"
 description = "ISO 17442 Types"
-readme = "README.md"
 authors.workspace = true
 categories = [
   "data-structures",

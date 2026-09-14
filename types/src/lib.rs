@@ -1,6 +1,6 @@
-//! ISO 17442 Types
+//! ISO 17442 Types.
 
-#![doc = include_str!("../README.md")]
+#![cfg_attr(doc, doc = include_str!("../README.md"))]
 #![no_std]
 
 #[cfg(feature = "alloc")]
@@ -23,30 +23,35 @@ use core::{
 use ref_cast::{RefCastCustom, ref_cast_custom};
 use thiserror::Error as ThisError;
 
-/// The size of a Legal Entity ID
+/// The size of a Legal Entity ID.
 const LEI_SIZE: usize = 20;
 
-/// The size of an LOU
+/// The size of an LOU.
 const ISSUER_SIZE: usize = 4;
 
+/// The start of the unit subslice.
 const LOU_START: usize = 0;
+/// The end of the unit subslice.
 const LOU_END: usize = LOU_START + ISSUER_SIZE;
 
-/// The size of an entry
+/// The size of an entry.
 const ID_SIZE: usize = 14;
 
+/// The start of the ID subslice.
 const ID_START: usize = LOU_END;
+/// The end of the ID subslice.
 const ID_END: usize = ID_START + ID_SIZE;
 
-/// The size of the checked portion of an LEI
+/// The size of the checked portion of an LEI.
 const CHECKED_SIZE: usize = ISSUER_SIZE + ID_SIZE;
 
-/// The position of the tens digit of the checksum
+/// The position of the tens digit of the checksum.
 const CHECK_TENS_POS: usize = 18;
 
-/// The position of the ones didit of the checksum
+/// The position of the ones didit of the checksum.
 const CHECK_ONES_POS: usize = 19;
 
+/// Validate a given slice of bytes is a proper LEI code.
 const fn validate(bytes: &[u8]) -> Result<(), Error> {
     if bytes.len() != LEI_SIZE {
         return Err(Error::InvalidLength(bytes.len(), LEI_SIZE));
@@ -83,7 +88,7 @@ const fn validate(bytes: &[u8]) -> Result<(), Error> {
     let (check_bytes, _trailer) = check_str_bytes.as_slice().split_at(check_pos);
 
     // SAFETY: We are building these bytes ourselves from ascii characters
-    #[allow(unsafe_code)]
+    #[expect(unsafe_code)]
     let src = unsafe { str::from_utf8_unchecked(check_bytes) };
 
     let result = u128::from_str_radix(src, 10);
@@ -93,9 +98,9 @@ const fn validate(bytes: &[u8]) -> Result<(), Error> {
             return Err(Error::CheckDigitFail);
         }
 
-        #[allow(clippy::cast_possible_truncation)]
+        #[expect(clippy::cast_possible_truncation)]
         let tens = check_digits as u8 / 10;
-        #[allow(clippy::cast_possible_truncation)]
+        #[expect(clippy::cast_possible_truncation)]
         let ones = check_digits as u8 % 10;
 
         if bytes[CHECK_TENS_POS] != tens + 48 || bytes[CHECK_ONES_POS] != ones + 48 {
@@ -108,7 +113,7 @@ const fn validate(bytes: &[u8]) -> Result<(), Error> {
     }
 }
 
-/// An enumeration of errors
+/// An enumeration of errors.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, ThisError)]
 #[cfg_attr(feature = "serde", derive(Deserialize, Serialize))]
 pub enum Error {
@@ -130,18 +135,20 @@ pub enum Error {
 }
 
 impl From<ParseIntError> for Error {
+    #[inline]
     fn from(_value: ParseIntError) -> Self {
         Self::CheckDigitParse
     }
 }
 
-/// A Legal Entity ID
+/// A Legal Entity ID borrow.
 #[derive(Debug, Eq, Hash, Ord, PartialEq, PartialOrd, RefCastCustom)]
 #[repr(transparent)]
-#[allow(non_camel_case_types)]
+#[expect(non_camel_case_types, reason = "Because &lei and Lei are old-school.")]
 pub struct lei([u8]);
 
 impl lei {
+    /// Forcibly cast a slice of bytes to a typed lei borrow.
     #[ref_cast_custom]
     pub(crate) const fn ref_cast(bytes: &[u8]) -> &Self;
 
@@ -153,6 +160,7 @@ impl lei {
     /// - [`Error::InvalidCharacter`] when the given string contains an invalid character.
     /// - [`Error::CheckDigitParse`] when the check digits contain invalid characters.
     /// - [`Error::CheckDigitFail`] when the check digit does not match the ID.
+    #[inline]
     pub const fn from_bytes(bytes: &[u8]) -> Result<&Self, Error> {
         if let Err(e) = validate(bytes) {
             Err(e)
@@ -169,18 +177,21 @@ impl lei {
     /// - [`Error::InvalidCharacter`] when the given string contains an invalid character.
     /// - [`Error::CheckDigitParse`] when the check digits contain invalid characters.
     /// - [`Error::CheckDigitFail`] when the check digit does not match the ID.
+    #[inline]
     pub const fn from_str_slice(s: &str) -> Result<&Self, Error> {
         lei::from_bytes(s.as_bytes())
     }
 
     /// Get a reference to the byte slice backing this string.
+    #[inline]
     #[must_use]
     pub const fn as_bytes(&self) -> &[u8] {
         &self.0
     }
 
     /// Get a reference to the validated LEI reference as a string slice.
-    #[allow(unsafe_code)]
+    #[expect(unsafe_code, reason = "Inner slice validated at construct time.")]
+    #[inline]
     #[must_use]
     pub const fn as_str(&self) -> &str {
         // SAFETY: The validate function ensures that only ascii uppercase and digit characters are
@@ -189,11 +200,12 @@ impl lei {
     }
 
     /// Split this LEI into three parts: issuer, ID, and check digit.
-    #[must_use]
     #[expect(
         clippy::missing_panics_doc,
         reason = "Invariants failure in check digit validation"
     )]
+    #[inline]
+    #[must_use]
     pub const fn split(&self) -> (&str, &str, u8) {
         let whole = self.as_str();
 
@@ -208,6 +220,7 @@ impl lei {
     }
 
     /// The issuer of this LEI as a string slice.
+    #[inline]
     #[must_use]
     pub const fn lou(&self) -> &str {
         let (issuer, _remainder) = self.as_str().split_at(LOU_END);
@@ -215,6 +228,7 @@ impl lei {
     }
 
     /// The ID part of this LEI as a string slice.
+    #[inline]
     #[must_use]
     pub const fn id(&self) -> &str {
         let (_issuer, remainder) = self.as_str().split_at(LOU_END);
@@ -223,6 +237,7 @@ impl lei {
     }
 
     /// The check digit of this LEI, as an unsigned integer between 2 and 97.
+    #[inline]
     #[must_use]
     pub const fn check_digits(&self) -> u8 {
         self.split().2
@@ -230,30 +245,34 @@ impl lei {
 }
 
 impl AsRef<[u8]> for lei {
+    #[inline]
     fn as_ref(&self) -> &[u8] {
         self.as_bytes()
     }
 }
 
 impl AsRef<str> for lei {
+    #[inline]
     fn as_ref(&self) -> &str {
         self.as_str()
     }
 }
 
 impl Display for lei {
+    #[inline]
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         write!(f, "{}", self.as_str())
     }
 }
 
-/// An owned Legal Entity ID
+/// An owned Legal Entity ID.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[repr(transparent)]
 pub struct Lei([u8; LEI_SIZE]);
 
 impl Lei {
     /// Create a new owned LEI from the given LEI borrow.
+    #[inline]
     #[must_use]
     pub const fn from_lei(src: &lei) -> Self {
         Self::from_bytes_unchecked(src.as_bytes())
@@ -280,6 +299,7 @@ impl Lei {
     /// - [`Error::InvalidCharacter`] when the given string contains an invalid character.
     /// - [`Error::CheckDigitParse`] when the check digits contain invalid characters.
     /// - [`Error::CheckDigitFail`] when the check digit does not match the ID
+    #[inline]
     pub const fn from_bytes(bytes: &[u8]) -> Result<Self, Error> {
         if let Err(e) = validate(bytes) {
             Err(e)
@@ -307,6 +327,7 @@ impl Lei {
     /// - [`Error::InvalidCharacter`] when the given string contains an invalid character.
     /// - [`Error::CheckDigitParse`] when the check digits contain invalid characters.
     /// - [`Error::CheckDigitFail`] when the check digit does not match the ID.
+    #[inline]
     pub const fn from_byte_array(bytes: [u8; LEI_SIZE]) -> Result<Self, Error> {
         if let Err(e) = validate(&bytes) {
             Err(e)
@@ -334,11 +355,13 @@ impl Lei {
     /// - [`Error::InvalidCharacter`] when the given string contains an invalid character.
     /// - [`Error::CheckDigitParse`] when the check digits contain invalid characters.
     /// - [`Error::CheckDigitFail`] when the check digit does not match the ID.
+    #[inline]
     pub const fn from_str_slice(src: &str) -> Result<Self, Error> {
         Self::from_bytes(src.as_bytes())
     }
 
-    /// Copy the given slice into bytes
+    /// Copy the given slice into bytes.
+    #[inline]
     pub(crate) const fn from_bytes_unchecked(slice: &[u8]) -> Self {
         let mut bytes = [0u8; LEI_SIZE];
         bytes.copy_from_slice(slice);
@@ -348,6 +371,7 @@ impl Lei {
 }
 
 impl Borrow<lei> for Lei {
+    #[inline]
     fn borrow(&self) -> &lei {
         self
     }
@@ -356,18 +380,21 @@ impl Borrow<lei> for Lei {
 impl Deref for Lei {
     type Target = lei;
 
+    #[inline]
     fn deref(&self) -> &Self::Target {
         lei::ref_cast(&self.0)
     }
 }
 
 impl Display for Lei {
+    #[inline]
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         write!(f, "{}", self.as_str())
     }
 }
 
 impl From<&lei> for Lei {
+    #[inline]
     fn from(value: &lei) -> Self {
         Lei::from_lei(value)
     }
@@ -376,6 +403,7 @@ impl From<&lei> for Lei {
 impl TryFrom<[u8; LEI_SIZE]> for Lei {
     type Error = Error;
 
+    #[inline]
     fn try_from(bytes: [u8; LEI_SIZE]) -> Result<Self, Self::Error> {
         Self::from_byte_array(bytes)
     }
@@ -384,6 +412,7 @@ impl TryFrom<[u8; LEI_SIZE]> for Lei {
 impl TryFrom<&[u8]> for Lei {
     type Error = Error;
 
+    #[inline]
     fn try_from(bytes: &[u8]) -> Result<Self, Self::Error> {
         Self::from_bytes(bytes)
     }
@@ -392,6 +421,7 @@ impl TryFrom<&[u8]> for Lei {
 impl FromStr for Lei {
     type Err = Error;
 
+    #[inline]
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Self::from_str_slice(s)
     }
