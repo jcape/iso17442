@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.5](https://github.com/jcape/iso17442/compare/v0.3.4...v0.3.5) - 2026-10-07
+
+### Fixed
+
+- no_std actually works
+
+### Other
+
+- *(dev)* add taplo
+- fix link to docs.rs
+
 ## [0.3.4](https://github.com/jcape/iso17442/compare/v0.3.3...v0.3.4) - 2026-09-14
 
 ### Other
