@@ -137,18 +137,18 @@ mod test {
     #[test]
     fn roundtrip() {
         let l = lei::from_str_slice(LEI_VALUE).expect("Could not construct LEI slice");
-        let val = serde_json::json!({
+        let value = serde_json::json!({
             "lei": l,
         });
 
         // serialize
-        let out = serde_json::to_string(&val).expect("Could not serialize value");
+        let out = serde_json::to_string(&value).expect("Could not serialize value");
         assert_eq!("{\"lei\":\"YZ83GD8L7GG84979J516\"}", &out);
 
         // deserialize
-        let val = serde_json::from_str::<BTreeMap<String, Lei>>(&out)
+        let map = serde_json::from_str::<BTreeMap<String, Lei>>(&out)
             .expect("Could not deserialize from JSON");
 
-        assert_eq!(val.get("lei").map(Deref::deref), Some(l));
+        assert_eq!(map.get("lei").map(Deref::deref), Some(l));
     }
 }

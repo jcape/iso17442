@@ -15,13 +15,13 @@ mod serde_;
 use ::serde::{Deserialize, Serialize};
 use core::{
     borrow::Borrow,
+    error::Error as CoreError,
     fmt::{Display, Formatter, Result as FmtResult},
     num::ParseIntError,
     ops::Deref,
     str::FromStr,
 };
 use ref_cast::{RefCastCustom, ref_cast_custom};
-use thiserror::Error as ThisError;
 
 /// The size of a Legal Entity ID.
 const LEI_SIZE: usize = 20;
@@ -114,25 +114,37 @@ const fn validate(bytes: &[u8]) -> Result<(), Error> {
 }
 
 /// An enumeration of errors.
-#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, ThisError)]
+#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(Deserialize, Serialize))]
 pub enum Error {
     /// The string has the wrong length for an LEI.
-    #[error("The string has the wrong length for an LEI.")]
     InvalidLength(usize, usize),
 
     /// The string contains invalid characters for an LEI.
-    #[error("The string contains an invalid character at {0} for an LEI.")]
     InvalidCharacter(usize),
 
     /// The check digits string could not be parsed.
-    #[error("The check digits string could not be parsed.")]
     CheckDigitParse,
 
     /// The check digits did not validate.
-    #[error("The check digits did not validate.")]
     CheckDigitFail,
 }
+
+impl Display for Error {
+    #[inline]
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        match self {
+            Self::InvalidLength(actual, expected) => {
+                write!(f, "invalid LEI length: got {actual}, expected {expected}")
+            }
+            Self::InvalidCharacter(pos) => write!(f, "invalid LEI character at position {pos}"),
+            Self::CheckDigitParse => f.write_str("LEI check digits could not be parsed"),
+            Self::CheckDigitFail => f.write_str("LEI check digits did not validate"),
+        }
+    }
+}
+
+impl CoreError for Error {}
 
 impl From<ParseIntError> for Error {
     #[inline]

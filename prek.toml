@@ -82,3 +82,9 @@ hooks = [
 ]
 repo = "https://github.com/AndrejOrsula/pre-commit-cargo"
 rev = "0.5.0"
+
+[[repos]]
+hooks = [
+  { id = "cargo-nono", name = "cargo nono check", entry = "cargo nono check --package iso17442-types", language = "system", files = '(\.rs|Cargo\.(toml|lock))$', pass_filenames = false },
+]
+repo = "local"

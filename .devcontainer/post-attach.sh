@@ -8,6 +8,7 @@ rustup toolchain install nightly --profile default
 cargo binstall -q -y --force prek
 cargo binstall -q -y --force action-validator
 cargo binstall -q -y --force cargo-deny
+cargo binstall -q -y --force cargo-nono
 cargo binstall -q -y --force cargo-nextest
 
 pushd /workspaces/iso17442 >/dev/null
