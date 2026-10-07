@@ -26,8 +26,12 @@ jobs:
         with:
           toolchain: stable
           components: rustfmt
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-nono
       - uses: r7kamura/rust-problem-matchers@v1
       - run: cargo fmt --all -- --check
+      - run: cargo nono check
       - uses: xt0rted/markdownlint-problem-matcher@v3
       - uses: DavidAnson/markdownlint-cli2-action@v24
         with:
