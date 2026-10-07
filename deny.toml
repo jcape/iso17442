@@ -20,8 +20,8 @@ wildcards = "deny"
 highlight = "all"
 allow = []
 deny = [
-    # https://github.com/briansmith/ring/issues/774
-    { name = "ring" },
+    { name = "enumflags2", reason = "https://github.com/meithecatte/enumflags2/blob/a098a77fc1bda72ea66ad511bee9400dd115f763/AGENTS.md" },
+    { name = "ring", reason = "https://github.com/briansmith/ring/issues/774" },
 ]
 skip = []
 skip-tree = []
