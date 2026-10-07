@@ -1,5 +1,23 @@
 # Contributing to ISO 17442 Crates
 
+## Generative AI Policy
+
+_This is a copy-paste of the [Debian policy on LLM usage](https://www.debian.org/vote/2026/vote_002#texte), with the name changed, and applies to version 0.4 of this crate. Prior versions do not contain any AI-assisted source code or data._
+
+This project neither endorses nor prohibits the use of generative AI tools in the development, maintenance, or documentation of software, packaging, documentation, and other media published within the this project Project. We recognize that such tools can substantially improve the productivity of contributors when used responsibly, allowing volunteers to spend more of their limited time on work that requires technical expertise, judgment, review, and collaboration.
+
+This project nevertheless expects that all contributions submitted to this project, regardless of how and with which tools they were produced, satisfy the same standards of quality, correctness, maintainability, and legal compliance. The use of a generative AI tool does not diminish the contributor's responsibility for the work they submit. Contributors are expected to understand, review, test, and, where appropriate, modify AI-assisted output before incorporating it into this project. Blindly accepting or uploading AI-generated material without appropriate human review is inconsistent with this project's established development practices. We enourage our contributors to disclose whether a contribution was made with AI assitance, but do not require them to do so.
+
+This project acknowledges that the legal status of material produced by generative AI systems remains the subject of ongoing discussion in many jurisdictions, including questions relating to copyright, authorship, licensing, and potential reproduction of training material. The project does not seek to resolve these unsettled legal questions through this General Resolution, nor does it adopt a position on whether AI-generated output is, in whole or in part, copyrightable or derived from copyrighted works.
+
+Instead, this project continues to rely on the judgment and responsibility of its individual contributors. Project members are expected to exercise appropriate care when using generative AI tools, to consider the provenance and licensing implications of material they contribute, and to avoid introducing content whose legal status they cannot reasonably justify. Existing this project policies governing licensing, copyright, software freedom, and the acceptance of contributions continue to apply irrespective of the tools used to produce those contributions.
+
+Contributors are expected to exercise appropriate care when designing and implementing workflows that incorporate generative AI tools. In particular, they should ensure that confidential information, private communications, security-sensitive information (such as embargoed information about security bugs that is not yet public), cryptographic keys, credentials, and other non-public material relating to the this project Project, its infrastructure, or its community are not disclosed to third-party AI services unless such disclosure has been explicitly authorized and is consistent with this project's security and privacy requirements.
+
+The use of generative AI does not alter this project's established expectations regarding large-scale or automated project actions. Contributors intending to perform actions with broad project impact, such as mass bug filing or patch submission, large-scale code modifications, or other automated changes or requests affecting many packages or contributors, should seek prior discussion and consensus through the appropriate project channels before proceeding. Any such automated process should be overseen by a human who remains accountable for its behavior and output.
+
+This resolution therefore affirms that generative AI is neither exempt from nor subject to special rules beyond the standards already expected of this project contributors. The responsibility for every contribution rests with the contributor who submits it, who remains accountable for its technical quality, legal acceptability, and suitability for inclusion in this project.
+
 ## Coding Style
 
 Part of submitting a PR to this repository is ensuring that the formatting is correct.
