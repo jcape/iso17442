@@ -40,7 +40,7 @@
     "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/devcontainers/features/rust:1": {
       "profile": "complete",
-      "version": "1.87.0"
+      "version": "stable"
     }
   },
   "name": "iso17442",
