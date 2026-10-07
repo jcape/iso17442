@@ -1,7 +1,7 @@
 [workspace]
-resolver = "2"
-members = ["types"]
 exclude = [".cache"]
+members = ["types"]
+resolver = "2"
 
 [workspace.dependencies]
 ref-cast = "1.0"
@@ -68,13 +68,13 @@ verbose_file_reads = "deny"
 [workspace.lints.rust]
 missing_debug_implementations = "deny"
 missing_docs = "deny"
-unreachable_pub = "deny"
 rust_2018_idioms = "deny"
+unreachable_pub = "deny"
 unsafe_code = "deny"
 
 [workspace.metadata.release]
-shared-version = true
 consolidate-commits = true
+shared-version = true
 tag-name = "v{{version}}"
 
 [workspace.package]

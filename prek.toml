@@ -51,33 +51,33 @@ repo = "https://github.com/mpalmer/action-validator"
 rev = "v0.9.0"
 
 [[repos]]
-hooks = [{ id = "cargo-deny", args = ["--all-features", "check"] }]
+hooks = [{ args = ["--all-features", "check"], id = "cargo-deny" }]
 repo = "https://github.com/EmbarkStudios/cargo-deny"
 rev = "0.20.2"
 
 [[repos]]
 hooks = [
-  { id = "cargo-check", args = [
+  { args = [
     "--all-features",
-  ] },
-  { id = "cargo-clippy", args = [
+  ], id = "cargo-check" },
+  { args = [
     "--all-features",
-  ] },
-  { id = "cargo-doc", args = [
+  ], id = "cargo-clippy" },
+  { args = [
+    "--all-features",
+  ], id = "cargo-test" },
+  { args = [
+    "--all-features",
+  ], id = "cargo-test-doc" },
+  { args = [
+    "--allow-dirty",
+    "--allow-staged",
+  ], id = "cargo-fix" },
+  { args = [
     "--document-private-items",
     "--no-deps",
-  ] },
-  { id = "cargo-fix", args = [
-    "--allow-staged",
-    "--allow-dirty",
-  ] },
+  ], id = "cargo-doc" },
   { id = "cargo-fmt" },
-  { id = "cargo-test", args = [
-    "--all-features",
-  ] },
-  { id = "cargo-test-doc", args = [
-    "--all-features",
-  ] },
   { id = "cargo-update" },
 ]
 repo = "https://github.com/AndrejOrsula/pre-commit-cargo"
@@ -85,6 +85,8 @@ rev = "0.5.0"
 
 [[repos]]
 hooks = [
-  { id = "cargo-nono", name = "cargo nono check", entry = "cargo nono check --package iso17442-types", language = "system", files = '(\.rs|Cargo\.(toml|lock))$', pass_filenames = false },
+  { entry = "cargo nono check --package iso17442-types", files = '(\.rs|Cargo\.(toml|lock))$', id = "cargo-nono", language = "system", name = "cargo nono check", pass_filenames = false },
+  { entry = "taplo check", id = "taplo", language = "system", name = "taplo check", pass_filenames = false },
+  { entry = "taplo format", id = "taplo", language = "system", name = "taplo format", pass_filenames = false },
 ]
 repo = "local"
