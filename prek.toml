@@ -85,7 +85,7 @@ rev = "0.5.0"
 
 [[repos]]
 hooks = [
-  { entry = "cargo nono check --package iso17442-types", files = '(\.rs|Cargo\.(toml|lock))$', id = "cargo-nono", language = "system", name = "cargo nono check", pass_filenames = false },
+  { entry = "cargo no-std-check --manifest-path types/Cargo.toml", files = '(\.rs|Cargo\.(toml|lock))$', id = "cargo-no-std-check-types", language = "system", name = "cargo no-std-check (types)", pass_filenames = false },
   { entry = "taplo check", id = "taplo", language = "system", name = "taplo check", pass_filenames = false },
   { entry = "taplo format", id = "taplo", language = "system", name = "taplo format", pass_filenames = false },
 ]
