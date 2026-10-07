@@ -36,5 +36,5 @@ Both of these types are fully usable in the `const` context, making them suitabl
 [crate-image]: https://img.shields.io/crates/v/iso17442-types.svg?style=for-the-badge
 [crate-link]: https://crates.io/crates/iso17442-types/0.3.4
 [docs-image]: https://img.shields.io/docsrs/iso17442-types?style=for-the-badge
-[docs-link]: https://docs.rs/crate/iso17442-types/0.3.4
+[docs-link]: https://docs.rs/iso17442-types/0.3.4/iso17442_types/
 [msrv-image]: https://img.shields.io/crates/msrv/iso17442-types/0.3.4?style=for-the-badge
